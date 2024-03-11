@@ -13,4 +13,18 @@ public class Option : MonoBehaviour
     {
         transform.GetChild(0).GetComponent<TMP_Text>().text = OptionName;
     }
+
+    void Update()
+    {
+        
+    }
+
+    public void Updatetext()
+    {
+        transform.GetChild(0).GetComponent<TMP_Text>().text = OptionName;
+    }
+    public void SelectOptions()
+    {
+        LevelManager.Instance.setPlayerAnswer(OptionId);
+    }
 }
