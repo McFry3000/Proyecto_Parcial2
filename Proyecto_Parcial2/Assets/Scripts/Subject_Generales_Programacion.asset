@@ -22,31 +22,31 @@ MonoBehaviour:
     - Simbolo
     - Tipo
     - Contenedor
-    correctAnswer: 0
+    correctAnswer: 4
   - ID: 1
-    lessons: "\xA1Que es una funcion?"
+    lessons: "\xBFQue es una funcion?"
     opciones:
     - Variable
     - Proceso
     - Clase
     - Recurso
     - Script
-    correctAnswer: 0
+    correctAnswer: 1
   - ID: 3
-    lessons: "\xA1Que es un programa?"
+    lessons: "\xBFQue es un Algoritmo?"
+    opciones:
+    - Una funcion
+    - Una lista
+    - Un programa
+    - Una variable
+    - pasos para resolver un problema
+    correctAnswer: 4
+  - ID: 3
+    lessons: "\xBFQue es un programa?"
     opciones:
     - Una funcion
     - Una clase
     - Un recurso
     - Un conjunto de algoritmos
     - Una serie de TV
-    correctAnswer: 0
-  - ID: 3
-    lessons: "\xA1Que es un programa?"
-    opciones:
-    - Una funcion
-    - Una clase
-    - Un recurso
-    - Un conjunto de algoritmos
-    - Una serie de TV
-    correctAnswer: 0
+    correctAnswer: 3

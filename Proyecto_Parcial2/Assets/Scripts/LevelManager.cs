@@ -31,17 +31,25 @@ public class LevelManager : MonoBehaviour
     public Color Green;
     public Color Red;
 
+    void Awake()
+    {
+        if (Instance != null)
+        {
+            return;
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
     void Start()
     {
         //Establecemos la cantidad de preguntas en la leccion
         questionAmount = Lesson.leccionList.Count;
-        //Leccion actual
-        currentLesson = Lesson.leccionList[currentQuestion];
-        //pregunta
-        question = currentLesson.lessons;
-        //respuesta correcta 
-        correctAnswer = currentLesson.opciones[currentLesson.correctAnswer];
+        LoadQuestion();
+        CheckPlayerState();
     }
+
 
 
    private void LoadQuestion()
@@ -86,11 +94,13 @@ public class LevelManager : MonoBehaviour
                 if(isCorrect)
                 {
                     AnswerContainer.GetComponent<Image>().color = Green;
-                    Debug.Log("Respuesta correcta. " + question + ": " + correctAnswer);
+                    Questiongood.text="Respuesta correcta. " + question + ": " + correctAnswer;
                 }
                 else
                 {
-                    Debug.Log("Respuesta Incorrecta. " + question + ": " + correctAnswer);
+
+                    AnswerContainer.GetComponent<Image>().color = Red;
+                    Questiongood.text = "Respuesta Incorrecta. " + question + ": " + correctAnswer;
                 }
 
                 //Incrementamos el indice de la pregunta actual
