@@ -23,16 +23,17 @@ public class LevelManager : MonoBehaviour
     public Leccion currentLesson;
 
     [Header("User Interface")]
-    public List<Option> opciones;
-    public TMP_Text Questiontxt;
-    public TMP_Text Questiongood;
-    public GameObject checkbutton;
-    public GameObject AnswerContainer;
-    public Color Green;
-    public Color Red;
+    public List<Option> opciones; // Lista de opciones para las respuestas
+    public TMP_Text Questiontxt; // Texto para mostrar la pregunta
+    public TMP_Text Questiongood; // Texto para mostrar el resultado de la respuesta
+    public GameObject checkbutton; // Botón para enviar la respuesta
+    public GameObject AnswerContainer; // Contenedor para mostrar el resultado de la respuesta
+    public Color Green; // Color para respuestas correctas
+    public Color Red; // Color para respuestas incorrectas
 
     void Awake()
     {
+        // Garantiza que solo haya una instancia de LevelManager
         if (Instance != null)
         {
             return;
@@ -42,132 +43,124 @@ public class LevelManager : MonoBehaviour
             Instance = this;
         }
     }
+
     void Start()
     {
-        //Establecemos la cantidad de preguntas en la leccion
+        // Establece la cantidad de preguntas en la lección
         questionAmount = Lesson.leccionList.Count;
-        //Crga la pregunta inicial
+        // Carga la primera pregunta
         LoadQuestion();
-        //checa si el jugador tiene una opcion seleccionada
+        // Chequea si el jugador tiene una opción seleccionada
         CheckPlayerState();
     }
 
-
-//se carga la pregunta, teniendo en cuenta si el jugador yacompleto la pregunta anterior
-   private void LoadQuestion()
+    // Carga la siguiente pregunta
+    private void LoadQuestion()
     {
-
-        //aseguramos que la pregunta actual este dentro de los limites
+        // Asegura que la pregunta actual esté dentro de los límites
         if (currentQuestion < questionAmount)
         {
-            //Establecemos la leccion actual
+            // Establece la lección actual
             currentLesson = Lesson.leccionList[currentQuestion];
-            //ERstablecemos la pregunta
+            // Establece la pregunta y respuesta correcta
             question = currentLesson.lessons;
-            //respuesta correcta
             correctAnswer = currentLesson.opciones[currentLesson.correctAnswer];
-            //Pregunta en UI
+            // Muestra la pregunta en la interfaz de usuario
             Questiontxt.text = question;
 
-            for(int i =0; i < currentLesson.opciones.Count; i++)
+            // Itera a través de las opciones y las muestra en la interfaz de usuario
+            for(int i = 0; i < currentLesson.opciones.Count; i++)
             {
-            //sirve para iterar a traves de una lista de opciones, usando sus identificadores provenientes desde el script option
                 opciones[i].GetComponent<Option>().OptionName = currentLesson.opciones[i];
-                opciones[i].GetComponent<Option>().OptionId =i;
+                opciones[i].GetComponent<Option>().OptionId = i;
                 opciones[i].GetComponent<Option>().Updatetext();
-            
             }
         }
         else
         {
-            //llegamos al final
             Debug.Log("Fin de las preguntas");
         }
     }
 
+    // Función para manejar la siguiente pregunta
     public void NextQuestion()
     {
-    //se checa la respuesta que selecciono el jugador
+        // Se verifica si el jugador ha seleccionado una respuesta
         if (CheckPlayerState())
         {
             if (currentQuestion < questionAmount)
             {
-            //vhecamos si la pregunta es correcta o no, dependiendo de esto, se abre un "if"
+                // Verifica si la respuesta del jugador es correcta o incorrecta
                 bool isCorrect = currentLesson.opciones[CorrectAnswerfromUser] == correctAnswer;
 
+                // Muestra el contenedor de respuesta
                 AnswerContainer.SetActive(true);
                 if(isCorrect)
                 {
-                //si la respuesta es correcta, semostrara en la UI el color verde dentro de un recuadro vacio, junto con el texto siguiente
+                    // Muestra la respuesta correcta en verde
                     AnswerContainer.GetComponent<Image>().color = Green;
-                    Questiongood.text="Respuesta correcta. " + question + ": " + correctAnswer;
+                    Questiongood.text = "Respuesta correcta. " + question + ": " + correctAnswer;
                 }
                 else
                 {
-                //si la resouesta es incorrecta, se mostrara en la UI el color rojo dentro del recuadro vacio, junto con el texto siguiente
-
+                    // Muestra la respuesta incorrecta en rojo
                     AnswerContainer.GetComponent<Image>().color = Red;
                     Questiongood.text = "Respuesta Incorrecta. " + question + ": " + correctAnswer;
                 }
 
-                //Incrementamos el indice de la pregunta actual
+                // Incrementa el índice de la pregunta actual
                 currentQuestion++;
 
-                //Mostrar el resultado durante un tiempo
-
+                // Muestra el resultado durante un tiempo y carga la siguiente pregunta
                 StartCoroutine(ShowResultAndLoadQuestion(isCorrect));
 
-                //Reset respuesta del jugador
+                // Reinicia la respuesta del jugador
                 CorrectAnswerfromUser = 9;
-
             }
             else
             {
-                //cambio de escena
+                // Cambia de escena (acción a implementar)
             }
         }
     }
-//funcion que inicia la corrutina, la cual funciona en paralelo al codigo anterior
+
+    // Corrutina para mostrar el resultado y cargar la siguiente pregunta
     private IEnumerator ShowResultAndLoadQuestion(bool isCorrect)
     {
-        yield return new WaitForSeconds(2.5f); //Ajusta el tiempo para mostrar el resultado
+        yield return new WaitForSeconds(2.5f); // Espera un tiempo antes de mostrar el resultado
 
-        //Oculta el contenedor de respuestas
+        // Oculta el contenedor de respuestas
         AnswerContainer.SetActive(false);
 
-        //cargar pregunta siguiente
+        // Carga la siguiente pregunta
         LoadQuestion();
 
-        //Activar el boton despues de mostrar el resultado
-        //Puedes hacer esto aqui o en LoadQuestion(), dependiendo de tu estructura
-        //por ejemplo, si el boton esta en el mismo GameObject que el script
-        //GetComponent<Button>().interactable = true;
+        // Activa el botón después de mostrar el resultado
         CheckPlayerState();
     }
 
-//se asgina la respuesta del jugador
+    // Establece la respuesta del jugador
     public void setPlayerAnswer(int _answer)
     {
-    /7actualiza la respuesta del jugador con el valorproporcionado
         CorrectAnswerfromUser = _answer;
     }
-//funcion que evalua si el juagdor interactua con el boton para hacer el modo hover 
+
+    // Verifica si el jugador ha seleccionado una respuesta y actualiza el estado del botón
     public bool CheckPlayerState()
     {
-    //si el jugador interactua con el boton, camvbiara de color
         if (CorrectAnswerfromUser != 9)
         {
-        
+            // Activa el botón si el jugador ha seleccionado una respuesta
             checkbutton.GetComponent<Button>().interactable = true;
-            checkbutton.GetComponent<Image>().color = Color.white;
+            checkbutton.GetComponent<Image>().color = Color.white; // Cambia el color del botón
             return true;
         }
         else
         {
+            // Desactiva el botón si el jugador no ha seleccionado una respuesta
             checkbutton.GetComponent<Button>().interactable = false;
-            checkbutton.GetComponent<Image>().color = Color.grey;
+            checkbutton.GetComponent<Image>().color = Color.grey; // Cambia el color del botón
             return false;
         }
-
     }
 }
